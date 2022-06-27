@@ -87,4 +87,4 @@ restaurant
 
 ## 搭建部署
 
-在restaurantmanpm目录下使用Maven进行打包，然后运行jar包，http://localhost:8080即为该项目的地址。
+在restaurantmanpm目录下使用Maven进行打包，然后运行jar包，http://localhost:8080 即为该项目的地址。
