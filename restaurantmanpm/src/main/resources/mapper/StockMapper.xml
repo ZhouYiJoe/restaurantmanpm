@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.firstGroup.restaurant.mapper.StockMapper">
+
+    <select id="findBelowThresholdPage" resultType="com.firstGroup.restaurant.model.vo.StockVo">
+        SELECT s.s_stock,mc.mc_id,mc.mc_name,mc.mc_unit,mc.mc_threshold,
+        mc.modify_time,mc.mc_imgurl,s.s_stock/mc.mc_threshold abundant
+        FROM
+        stock s left join material_code mc on s.mc_id = mc.mc_id
+        <where>
+            s.r_id = #{r_id} AND
+            <if test="cateId != null">
+                mc.cate_id = #{cateId} AND
+            </if>
+            <if test="keyword != null">
+                ( mc.mc_name LIKE concat(concat('%',#{keyword}),'%') or
+                mc.mc_unit LIKE concat(concat('%',#{keyword}),'%') or
+                mc.mc_description LIKE concat(concat('%',#{keyword}),'%') ) AND
+            </if>
+            <if test="belowThreshold != null">
+                <if test="belowThreshold == 0">
+                    s.s_stock >= mc.mc_threshold AND
+                </if>
+                <if test="belowThreshold == 1">
+                    mc.mc_threshold >= s.s_stock AND
+                </if>
+            </if>
+            1 = 1
+        </where>
+
+        <if test="sortColumn != null">
+            <if test="sortOrder == 'asc'">
+                <if test="sortColumn == 'abundant'">
+                    order by abundant asc
+                </if>
+                <if test="sortColumn == 's_stock'">
+                    order by s.s_stock asc
+                </if>
+                <if test="sortColumn == 'modify_time'">
+                    order by s.modify_time asc
+                </if>
+            </if>
+            <if test="sortOrder == 'desc'">
+                <if test="sortColumn == 'abundant'">
+                    order by abundant desc
+                </if>
+                <if test="sortColumn == 's_stock'">
+                    order by s.s_stock desc
+                </if>
+                <if test="sortColumn == 'modify_time'">
+                    order by s.modify_time desc
+                </if>
+            </if>
+        </if>
+        limit #{begin},#{pageSize}
+    </select>
+
+    <select id="findBelowThresholdPageTotal" resultType="integer">
+        SELECT count(*)
+        FROM
+        stock s left join material_code mc on s.mc_id = mc.mc_id
+        <where>
+            s.r_id = #{r_id} AND
+            <if test="cateId != null">
+                mc.cate_id = #{cateId} AND
+            </if>
+            <if test="keyword != null">
+                ( mc.mc_name LIKE concat(concat('%',#{keyword}),'%') or
+                mc.mc_unit LIKE concat(concat('%',#{keyword}),'%') or
+                mc.mc_description LIKE concat(concat('%',#{keyword}),'%') ) AND
+            </if>
+            <if test="belowThreshold != null">
+                <if test="belowThreshold == 0">
+                    s.s_stock >= mc.mc_threshold AND
+                </if>
+                <if test="belowThreshold == 1">
+                    mc.mc_threshold >= s.s_stock AND
+                </if>
+            </if>
+            1 = 1
+        </where>
+    </select>
+
+    <select id="findAllBelowThreshold" resultType="com.firstGroup.restaurant.model.vo.StockVo">
+        SELECT s.s_stock,mc.mc_id,s.r_id,mc.mc_name,mc.cate_id,mc.mc_unit,mc.mc_threshold,mc.mc_description,
+        mc.mc_imgurl,mc.mc_pricePerUnit,s.s_stock/mc.mc_threshold abundant,mc.modify_time,mc.create_time
+        FROM
+        stock s left join material_code mc on s.mc_id = mc.mc_id
+        where s.r_id = #{r_id} AND mc.mc_threshold >= s.s_stock
+        order by abundant asc
+    </select>
+
+</mapper>

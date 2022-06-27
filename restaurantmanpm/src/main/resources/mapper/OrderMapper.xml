@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.firstGroup.restaurant.mapper.OrderMapper">
+
+
+    <select id="getUserOrderDishes" resultType="com.firstGroup.restaurant.model.vo.DishNumber">
+        select d.id dId, count(*) value
+        from menu_order_ mo, order_ o, customer c, dish d
+        where o.c_id=c.c_id and mo.o_id=o.o_id and d.d_id=mo.d_id and o.c_id = #{cId}
+        group by d.d_id
+    </select>
+</mapper>

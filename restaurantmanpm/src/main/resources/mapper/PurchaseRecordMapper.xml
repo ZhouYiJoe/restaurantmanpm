@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.firstGroup.restaurant.mapper.PurchaseRecordMapper">
+    <select id="findPage" resultType="com.firstGroup.restaurant.model.vo.PurchaseRecordPageVo">
+        SELECT pr.id purchase_record_id, a.a_name,
+               pr.note, pr.modify_time, pr.actual_total_price,
+               pr.expected_total_price, pr.status is_finish
+        FROM
+        purchase_record pr, admin a
+        <where>
+            <if test="r_id != null">
+                pr.r_id = #{r_id} AND
+            </if>
+            <if test="keyword != null">
+                a.a_name LIKE concat(concat('%',#{keyword}),'%') AND
+            </if>
+            <if test="from != null">
+                pr.modify_time &gt;= #{from} AND
+            </if>
+            <if test="to != null">
+                pr.modify_time &lt;= #{to} AND
+            </if>
+            pr.a_id = a.a_id
+        </where>
+
+        <if test="sortColumn != null">
+            <if test="sortOrder != null">
+                <if test="sortOrder == 'asc'">
+                    <if test="sortColumn == 'status'">
+                        order by pr.status asc
+                    </if>
+                    <if test="sortColumn == 'expected_total_price'">
+                        order by pr.expected_total_price asc
+                    </if>
+                    <if test="sortColumn == 'actual_total_price'">
+                        order by pr.actual_total_price asc
+                    </if>
+                    <if test="sortColumn == 'modify_time'">
+                        order by pr.modify_time asc
+                    </if>
+                </if>
+                <if test="sortOrder == 'desc'">
+                    <if test="sortColumn == 'status'">
+                        order by pr.status desc
+                    </if>
+                    <if test="sortColumn == 'expected_total_price'">
+                        order by pr.expected_total_price desc
+                    </if>
+                    <if test="sortColumn == 'actual_total_price'">
+                        order by pr.actual_total_price desc
+                    </if>
+                    <if test="sortColumn == 'modify_time'">
+                        order by pr.modify_time desc
+                    </if>
+                </if>
+            </if>
+        </if>
+        limit #{begin},#{pageSize}
+    </select>
+
+    <select id="findRestaurantPageTotal" resultType="integer">
+        SELECT count(*)
+        FROM
+        purchase_record pr, admin a
+        <where>
+            <if test="r_id != null">
+                pr.r_id = #{r_id} AND
+            </if>
+            <if test="keyword != null">
+                a.a_name LIKE concat(concat('%',#{keyword}),'%') AND
+            </if>
+            <if test="from != null">
+                pr.modify_time &gt;= #{from} AND
+            </if>
+            <if test="to != null">
+                pr.modify_time &lt;= #{to} AND
+            </if>
+            pr.a_id = a.a_id
+        </where>
+    </select>
+
+</mapper>

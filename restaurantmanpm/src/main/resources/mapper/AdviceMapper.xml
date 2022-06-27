@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.firstGroup.restaurant.mapper.AdviceMapper">
+
+    <select id="findPage" resultType="com.firstGroup.restaurant.model.vo.AdvicePageVo">
+        SELECT a.id advice_id, a.content, a.create_time, a.name, a.status, a.o_id, a.star, c.c_name, o.create_time
+        orderTime
+        FROM
+        advice a, order_ o, customer c
+        <where>
+            <if test="r_id != null">
+                o.r_id = #{r_id} AND
+            </if>
+            <if test="status != null">
+                a.status = #{status} AND
+            </if>
+            <if test="keyword != null">
+                (c.c_name LIKE concat(concat('%',#{keyword}),'%') OR
+                a.content LIKE concat(concat('%',#{keyword}),'%') OR
+                a.name LIKE concat(concat('%',#{keyword}),'%')) AND
+            </if>
+            <if test="from != null">
+                a.create_time &gt;= #{from} AND
+            </if>
+            <if test="to != null">
+                a.create_time &lt;= #{to} AND
+            </if>
+            a.o_id = o.o_id AND
+            o.c_id = c.c_id
+        </where>
+
+        <if test="sortColumn != null">
+            <if test="sortOrder != null">
+                <if test="sortOrder == 'asc'">
+                    <if test="sortColumn == 'name'">
+                        order by a.name asc
+                    </if>
+                    <if test="sortColumn == 'status'">
+                        order by a.status asc
+                    </if>
+                    <if test="sortColumn == 'star'">
+                        order by a.star asc
+                    </if>
+                    <if test="sortColumn == 'o_id'">
+                        order by a.o_id asc
+                    </if>
+                    <if test="sortColumn == 'create_time'">
+                        order by a.create_time asc
+                    </if>
+                </if>
+                <if test="sortOrder == 'desc'">
+                    <if test="sortColumn == 'name'">
+                        order by a.name desc
+                    </if>
+                    <if test="sortColumn == 'status'">
+                        order by a.status desc
+                    </if>
+                    <if test="sortColumn == 'star'">
+                        order by a.star desc
+                    </if>
+                    <if test="sortColumn == 'o_id'">
+                        order by a.o_id desc
+                    </if>
+                    <if test="sortColumn == 'create_time'">
+                        order by a.create_time desc
+                    </if>
+                </if>
+            </if>
+        </if>
+        limit #{begin},#{pageSize}
+    </select>
+
+    <select id="findRestaurantPageTotal" resultType="integer">
+        SELECT count(*)
+        FROM
+        advice a, order_ o, customer c
+        <where>
+            <if test="r_id != null">
+                o.r_id = #{r_id} AND
+            </if>
+            <if test="status != null">
+                a.status = #{status} AND
+            </if>
+            <if test="keyword != null">
+                c.c_name LIKE concat(concat('%',#{keyword}),'%') AND
+            </if>
+            <if test="from != null">
+                a.create_time &gt;= #{from} AND
+            </if>
+            <if test="to != null">
+                a.create_time &lt;= #{to} AND
+            </if>
+            a.o_id = o.o_id AND
+            o.c_id = c.c_id
+        </where>
+    </select>
+
+    <select id="findRestaurantPageTotalByDate" resultType="integer">
+        SELECT count(*)
+        FROM
+        advice a, order_ o
+        <where>
+            <if test="r_id != null">
+                o.r_id = #{r_id} AND
+            </if>
+            <if test="star != null">
+                a.star >= #{star} AND
+            </if>
+            <if test="from != null">
+                a.create_time &gt;= #{from} AND
+            </if>
+            <if test="to != null">
+                a.create_time &lt;= #{to} AND
+            </if>
+            a.o_id = o.o_id
+        </where>
+    </select>
+    <select id="findByCustomerId" resultType="com.firstGroup.restaurant.model.vo.AdviceFeedbackVo">
+        SELECT a.id advice_id, a.content advice_content, a.create_time, a.name, a.status, a.o_id, f.content feedback_content, a.star
+        FROM
+        advice a left join feedback f on a.id = f.advice_id, order_ o, customer c
+        <where>
+            <if test="r_id != null">
+                o.r_id = #{r_id} AND
+            </if>
+            <if test="customerId != null">
+                c.c_id = #{customerId} AND
+            </if>
+            a.o_id = o.o_id AND
+            o.c_id = c.c_id
+        </where>
+        order by a.create_time desc
+        limit #{begin},#{pageSize}
+    </select>
+
+    <select id="findPageTotalByCustomerId" resultType="integer">
+        SELECT count(*)
+        FROM
+        advice a left join feedback f on a.id = f.advice_id, order_ o, customer c
+        <where>
+            <if test="r_id != null">
+                o.r_id = #{r_id} AND
+            </if>
+            <if test="customerId != null">
+                c.c_id = #{customerId} AND
+            </if>
+            a.o_id = o.o_id AND
+            o.c_id = c.c_id
+        </where>
+    </select>
+
+
+</mapper>
