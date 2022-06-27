@@ -43,7 +43,7 @@ restaurant
 | ---------------------- | ---------------- | ------------------------------------------------------------ |
 | Spring Boot            | 容器 + MVC框架   | https://spring.io/projects/spring-boot                       |
 | Spring Security        | 认证授权框架     | https://spring.io/projects/spring-security                   |
-| MyBatis Plus           | ORM框架          | https://baomidou.com/                                        |
+| MyBatis-Plus           | ORM框架          | https://baomidou.com/                                        |
 | MyBatis Plus Generator | 数据层代码生成   | https://github.com/baomidou/generator                        |
 | Redis                  | 分布式缓存       | https://redis.io/                                            |
 | HikariCP               | 数据库连接池     | https://github.com/brettwooldridge/HikariCP                  |
